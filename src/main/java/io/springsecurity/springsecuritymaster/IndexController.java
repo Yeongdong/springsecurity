@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class IndexController {
 
     @GetMapping("/")
-    public String index(String customParam){
-        if(customParam == null){
+    public String index(String customParam) {
+        if (customParam == null) {
             return "index";
-        }else{
+        } else {
             return "customPage";
         }
     }
@@ -51,5 +51,15 @@ public class IndexController {
     @GetMapping("/logoutSuccess")
     public String logoutSuccess() {
         return "logoutSuccess";
+    }
+
+    @GetMapping("/invalidSessionUrl")
+    public String invalidSessionUrl() {
+        return "invalidSessionUrl";
+    }
+
+    @GetMapping("/expiredUrl")
+    public String expiredUrl() {
+        return "expiredUrl";
     }
 }
