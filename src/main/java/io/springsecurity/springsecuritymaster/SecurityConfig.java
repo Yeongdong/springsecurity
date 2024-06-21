@@ -1,11 +1,7 @@
 package io.springsecurity.springsecuritymaster;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,9 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
-
-import java.io.IOException;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 
 @EnableWebSecurity
 @Configuration
@@ -25,29 +20,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
+//        CookieCsrfTokenRepository csrfTokenRepository = new CookieCsrfTokenRepository();
+//        XorCsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new XorCsrfTokenRequestAttributeHandler();
+
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/csrf", "/csrfToken").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
-                .exceptionHandling(exception -> exception
-                        /*.authenticationEntryPoint(new AuthenticationEntryPoint() {
-
-                            @Override
-                            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-                                System.out.println("exception: " + authException.getMessage());
-                                response.sendRedirect("/login");
-                            }
-                        })*/
-                        .accessDeniedHandler(new AccessDeniedHandler() {
-
-                            @Override
-                            public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-                                System.out.println("exception: " + accessDeniedException.getMessage());
-                                response.sendRedirect("/denied");
-                            }
-                        }))
+//                .csrf(csrf->csrf.ignoringRequestMatchers("/csrf"));
+//                .csrf(csrf -> csrf
+//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//                        .csrfTokenRequestHandler(csrfTokenRequestAttributeHandler))
         ;
         return http.build();
     }
