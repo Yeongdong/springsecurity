@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -83,5 +84,15 @@ public class IndexController {
         CsrfToken csrfToken1 = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         CsrfToken csrfToken2 = (CsrfToken) request.getAttribute("_csrf");
         return csrfToken1.getToken();
+    }
+
+    @PostMapping("/formCsrf")
+    public CsrfToken formCsrf(CsrfToken csrfToken) {
+        return csrfToken;
+    }
+
+    @PostMapping("/cookieCsrf")
+    public CsrfToken cookieCsrf(CsrfToken csrfToken) {
+        return csrfToken;
     }
 }
