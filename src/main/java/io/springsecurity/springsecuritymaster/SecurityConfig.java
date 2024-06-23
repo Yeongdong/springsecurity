@@ -1,6 +1,6 @@
 package io.springsecurity.springsecuritymaster;
 
-import org.springframework.context.ApplicationContext;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -19,15 +19,22 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, ApplicationContext context) throws Exception {
+    /*@Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return webSecurity -> {
+            webSecurity.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+        };
+    }*/
 
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/images/**").permitAll()
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .anyRequest().authenticated())
                 .formLogin(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable);
-
         return http.build();
     }
 
