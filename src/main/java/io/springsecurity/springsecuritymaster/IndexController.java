@@ -12,9 +12,9 @@ public class IndexController {
         return "index";
     }
 
-    @GetMapping("/custom")
-    public String custom(){
-        return "custom";
+    @GetMapping("/user")
+    public String user(){
+        return "user";
     }
 
     @GetMapping("/user/{name}")
@@ -25,5 +25,15 @@ public class IndexController {
     @GetMapping("/admin/db")
     public String admin(){
         return "admin";
+    }
+
+    @GetMapping("/api/photos")
+    public String photos(){
+        return "photos";
+    }
+
+    @GetMapping("/oauth/login")
+    public String oauth(){
+        return "oauthLogin";
     }
 }
