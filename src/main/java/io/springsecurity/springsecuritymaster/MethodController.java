@@ -1,15 +1,26 @@
 package io.springsecurity.springsecuritymaster;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 public class MethodController {
 
-    @GetMapping("/admin")
+    private final DataService dataService;
+
+    @GetMapping("/")
+    public String index() {
+        return "index";
+    }
+
+    /*@GetMapping("/admin")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String admin() {
         return "admin";
@@ -43,5 +54,27 @@ public class MethodController {
     @PostAuthorize("hasAuthority('ROLE_ADMIN') and returnObject.isSecure")
     public Account isSecure(String name, String secure) {
         return new Account(name, "Y".equals(secure));
+    }*/
+
+    @PostMapping("/writeList")
+    public List<Account> writeList(@RequestBody List<Account> data) {
+        return dataService.writeList(data);
+    }
+
+    @PostMapping("/writeMap")
+    public Map<String, Account> writeMap(@RequestBody List<Account> data) {
+        Map<String, Account> dataMap = data.stream()
+                .collect(Collectors.toMap(Account::getOwner, account -> account));
+        return dataService.writeMap(dataMap);
+    }
+
+    @GetMapping("/readList")
+    public List<Account> readList() {
+        return dataService.readList();
+    }
+
+    @GetMapping("/readMap")
+    public Map<String, Account> readMap() {
+        return dataService.readMap();
     }
 }
