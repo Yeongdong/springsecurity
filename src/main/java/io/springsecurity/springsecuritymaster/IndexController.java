@@ -1,22 +1,25 @@
 package io.springsecurity.springsecuritymaster;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
+import java.util.concurrent.Callable;
 
 @RestController
+@RequiredArgsConstructor
 public class IndexController {
 
+    private final AsyncService asyncService;
+
     @GetMapping("/")
-    public String index(HttpServletRequest request){
+    public String index(){
         return "index";
     }
+
     @GetMapping("/user")
     public String user(){
         return "user";
@@ -30,19 +33,29 @@ public class IndexController {
         return "admin";
     }
 
-    @GetMapping("/login")
-    public String login(HttpServletRequest request, MemberDto memberDto) throws ServletException, IOException {
-        request.login(memberDto.getUsername(), memberDto.getPassword());
-        System.out.println("login is successful");
-        return "login";
-    }
+    @GetMapping("/callable")
+    public Callable<Authentication> callable() {
+        SecurityContext securityContext = SecurityContextHolder.getContextHolderStrategy().getContext();
+        System.out.println("securityContext = " + securityContext);
+        System.out.println("Parent Thread: " + Thread.currentThread().getName());
 
-    @GetMapping("/users")
-    public List<MemberDto> users(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        boolean authenticate = request.authenticate(response);
-        if (authenticate) {
-            return List.of(new MemberDto("user","1111"));
-        }
-        return Collections.emptyList();
+        return new Callable<Authentication>() {
+            public Authentication call() throws Exception {
+                SecurityContext securityContext = SecurityContextHolder.getContextHolderStrategy().getContext();
+                System.out.println("securityContext = " + securityContext);
+                System.out.println("Child Thread: " + Thread.currentThread().getName());
+                Authentication authentication = securityContext.getAuthentication();
+
+                return authentication;
+            }
+        };
+    }
+    @GetMapping("/async")
+    public Authentication async() {
+        SecurityContext securityContext = SecurityContextHolder.getContextHolderStrategy().getContext();
+        System.out.println("securityContext = " + securityContext);
+        System.out.println("Parent Thread: " + Thread.currentThread().getName());
+        asyncService.asyncMethod();
+        return  securityContext.getAuthentication();
     }
 }
