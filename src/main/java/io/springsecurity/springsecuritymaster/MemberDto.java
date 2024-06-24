@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class Account {
-    private String owner;
-    private boolean isSecure;
+public class MemberDto {
+    private String username;
+    private String password;
 }
