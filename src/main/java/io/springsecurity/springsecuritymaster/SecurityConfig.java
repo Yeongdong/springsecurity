@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -36,8 +35,7 @@ public class SecurityConfig {
                         .requestMatchers("/db").hasAuthority("ROLE_DB")
                         .requestMatchers("/admin").hasAuthority("ROLE_ADMIN")
                         .anyRequest().permitAll())
-                .formLogin(Customizer.withDefaults())
-                .with(MyCustomDsl.customDsl(), dsl -> dsl.setFlag(true));
+                .formLogin(Customizer.withDefaults());
 
         return http.build();
     }

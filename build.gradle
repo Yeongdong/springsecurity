@@ -23,6 +23,8 @@ dependencies {
 	implementation 'org.projectlombok:lombok'
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: '3.2.2'
 	implementation group: 'org.springframework.session', name: 'spring-session-core', version: '3.2.1'
+	implementation 'org.springframework.session:spring-session-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
