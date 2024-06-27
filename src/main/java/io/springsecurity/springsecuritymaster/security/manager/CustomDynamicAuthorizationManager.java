@@ -1,7 +1,9 @@
 package io.springsecurity.springsecuritymaster.security.manager;
 
-import io.springsecurity.springsecuritymaster.security.mapper.MapBasedUrlRoleMapper;
+import io.springsecurity.springsecuritymaster.admin.repository.ResourcesRepository;
+import io.springsecurity.springsecuritymaster.security.mapper.PersistentUrlRoleMapper;
 import io.springsecurity.springsecuritymaster.security.service.DynamicAuthorizationService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authorization.AuthorityAuthorizationManager;
 import org.springframework.security.authorization.AuthorizationDecision;
@@ -24,11 +26,18 @@ import java.util.stream.Collectors;
 public class CustomDynamicAuthorizationManager implements AuthorizationManager<RequestAuthorizationContext> {
 
     List<RequestMatcherEntry<AuthorizationManager<RequestAuthorizationContext>>> mappings;
-    private static final AuthorizationDecision DENY = new AuthorizationDecision(false);
+    private static final AuthorizationDecision ACCESS = new AuthorizationDecision(true);
     private final HandlerMappingIntrospector handlerMappingIntrospector;
+    private final ResourcesRepository resourcesRepository;
+    DynamicAuthorizationService dynamicAuthorizationService;
 
+    @PostConstruct
     public void mapping() {
-        DynamicAuthorizationService dynamicAuthorizationService = new DynamicAuthorizationService(new MapBasedUrlRoleMapper());
+        dynamicAuthorizationService = new DynamicAuthorizationService(new PersistentUrlRoleMapper(resourcesRepository));
+        setMapping();
+    }
+
+    private void setMapping() {
         mappings = dynamicAuthorizationService.getUrlRoleMappings()
                 .entrySet().stream()
                 .map(entry -> new RequestMatcherEntry<>(
@@ -55,7 +64,7 @@ public class CustomDynamicAuthorizationManager implements AuthorizationManager<R
                         new RequestAuthorizationContext(request.getRequest(), matchResult.getVariables()));
             }
         }
-        return DENY;
+        return ACCESS;
     }
 
     private AuthorizationManager<RequestAuthorizationContext> customAuthorizationManager(String role) {
@@ -64,5 +73,10 @@ public class CustomDynamicAuthorizationManager implements AuthorizationManager<R
         } else {
             return new WebExpressionAuthorizationManager(role);
         }
+    }
+
+    public synchronized void reload() {
+        mappings.clear();
+        setMapping();
     }
 }
