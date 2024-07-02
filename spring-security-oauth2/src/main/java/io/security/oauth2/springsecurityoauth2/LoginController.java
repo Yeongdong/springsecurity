@@ -4,11 +4,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class IndexController {
+public class LoginController {
 
-    @GetMapping("/")
-    public String index() {
-
-        return "index";
+    @GetMapping("/loginPage")
+    public String loginPage() {
+        return "loginPage";
     }
 }
