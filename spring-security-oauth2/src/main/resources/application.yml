@@ -6,19 +6,41 @@ spring:
     oauth2:
       client:
         registration:
-          keycloak:
+          keycloak1:
             clientId: oauth2-client-app
             clientSecret: mD1WwqzishwIjtnl5rhu0GVOzEbUXung
             clientName: oauth2-client-app
-            redirectUri: http://localhost:8081/login/v1/oauth2/code/keycloak
             authorizationGrantType: authorization_code
+            scope: openid,profile
             clientAuthenticationMethod: client_secret_basic
-            scope: openid,profile,email
+            redirectUri: http://localhost:8081/login/oauth2/code/keycloak
+            provider: keycloak
+
+          keycloakWithPKCE:
+            clientId: oauth2-client-app2
+            clientSecret: gWmy5sKqWw11JW5eP7nMjwEvnpvM3zYC
+            clientName: oauth2-client-app2
+            authorizationGrantType: authorization_code
+            scope: openid,profile
+            clientAuthenticationMethod: client_secret_basic
+#           clientAuthenticationMethod: none
+            redirectUri: http://localhost:8081/login/oauth2/code/keycloak
+            provider: keycloak
+
+          keycloak2:
+            clientId: oauth2-client-app3
+            clientName: oauth2-client-app3
+            authorizationGrantType: implicit
+            scope: openid,profile
+            clientAuthenticationMethod: none
+            redirectUri: http://localhost:8081/home
+            provider: keycloak
+
         provider:
           keycloak:
-            authorizationUri: http://localhost:8080/realms/oauth2/protocol/openid-connect/auth
-            tokenUri: http://localhost:8080/realms/oauth2/protocol/openid-connect/token
             issuerUri: http://localhost:8080/realms/oauth2
-            userInfoUri: http://localhost:8080/realms/oauth2/protocol/openid-connect/userinfo
+            authorizationUri: http://localhost:8080/realms/oauth2/protocol/openid-connect/auth
             jwkSetUri: http://localhost:8080/realms/oauth2/protocol/openid-connect/certs
+            tokenUri: http://localhost:8080/realms/oauth2/protocol/openid-connect/token
+            userInfoUri: http://localhost:8080/realms/oauth2/protocol/openid-connect/userinfo
             userNameAttribute: preferred_username
