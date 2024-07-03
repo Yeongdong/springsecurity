@@ -20,7 +20,10 @@ public class HomeController {
 
         model.addAttribute("oauth2AuthenticationToken", oauth2AuthenticationToken);
         model.addAttribute("accessToken", authorizedClient.getAccessToken().getTokenValue());
-        model.addAttribute("refreshToken", authorizedClient.getRefreshToken().getTokenValue());
+        if (authorizedClient.getRefreshToken() != null) {
+            model.addAttribute("refreshToken", authorizedClient.getRefreshToken().getTokenValue());
+        }
+
 
         return "home";
     }

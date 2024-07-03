@@ -26,7 +26,7 @@ public class OAuth2ClientConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/oauth2Login", "/client", "/logout").permitAll()
+                        .requestMatchers("/", "/oauth2Login", "/v2/oauth2Login", "/client", "/logout").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Client(Customizer.withDefaults())
                 .addFilterBefore(customOAuth2AuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -44,7 +44,7 @@ public class OAuth2ClientConfig {
         auth2AuthenticationFilter.setAuthenticationSuccessHandler((request, response, authentication) -> {
             response.sendRedirect("/home");
         });
-        
+
         return auth2AuthenticationFilter;
     }
 }
