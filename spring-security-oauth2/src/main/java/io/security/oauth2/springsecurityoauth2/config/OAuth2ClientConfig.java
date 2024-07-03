@@ -1,4 +1,4 @@
-package io.security.oauth2.springsecurityoauth2;
+package io.security.oauth2.springsecurityoauth2.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,11 +14,13 @@ public class OAuth2ClientConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/home", "/client").permitAll()
+                        .requestMatchers("/", "/oauth2Login", "/client", "/logout").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Client(Customizer.withDefaults())
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/logout"))
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .clearAuthentication(true))
         ;
         return http.build();
     }
