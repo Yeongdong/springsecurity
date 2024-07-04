@@ -1,30 +1,23 @@
 package io.security.oauth2.springsecurityoauth2.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class HomeController {
+    @GetMapping("/api/user")
+    public Authentication user(Authentication authentication, @AuthenticationPrincipal OAuth2User oauth2User) {
+        System.out.println("authentication = " + authentication + ", oauth2User = " + oauth2User);
+        return authentication;
+    }
 
-    @Autowired
-    private OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
-
-    @GetMapping("/home")
-    public String home(Model model, OAuth2AuthenticationToken oauth2AuthenticationToken) {
-        OAuth2AuthorizedClient authorizedClient = oAuth2AuthorizedClientService.loadAuthorizedClient("keycloak", oauth2AuthenticationToken.getName());
-
-        model.addAttribute("oauth2AuthenticationToken", oauth2AuthenticationToken);
-        model.addAttribute("accessToken", authorizedClient.getAccessToken().getTokenValue());
-        if (authorizedClient.getRefreshToken() != null) {
-            model.addAttribute("refreshToken", authorizedClient.getRefreshToken().getTokenValue());
-        }
-
-
-        return "home";
+    @GetMapping("/api/oidc")
+    public Authentication oidc(Authentication authentication, @AuthenticationPrincipal OidcUser oidcUser) {
+        System.out.println("authentication = " + authentication + ", oidcUser = " + oidcUser);
+        return authentication;
     }
 }
