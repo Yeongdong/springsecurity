@@ -3,7 +3,7 @@ package io.security.oauth2.springsecurityoauth2.signature;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
@@ -17,7 +17,7 @@ import java.util.List;
  * MAC 및 RSA 암호화 방식에 따라 토큰을 발행하는 추상 클래스
  */
 public abstract class SecuritySigner {
-    protected String getJwtTokenInternal(MACSigner jwsSigner, UserDetails user, JWK jwk) throws JOSEException {
+    protected String getJwtTokenInternal(JWSSigner jwsSigner, UserDetails user, JWK jwk) throws JOSEException {
         JWSHeader header = new JWSHeader.Builder((JWSAlgorithm) jwk.getAlgorithm()).keyID(jwk.getKeyID()).build();
         List<String> authorities = user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
